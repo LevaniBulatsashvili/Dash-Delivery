@@ -1,0 +1,20 @@
+import { IBaseResponse } from "./response.interface";
+
+interface IAdress {
+  lng: number;
+  lat: number;
+}
+
+export interface IBaseUser {
+  firstName: string;
+  lastName: string;
+  pid: number;
+  phoneNumber: string;
+  email: string;
+  password: string;
+  profileImage: string;
+  role: "admin" | "user" | "courier";
+  address: IAdress;
+}
+
+export interface IUser extends IBaseResponse, IBaseUser {}
