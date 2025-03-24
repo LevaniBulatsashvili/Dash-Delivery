@@ -14,9 +14,6 @@ import {
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-const API_URL = import.meta.env.VITE_API_URL;
-const API_KEY = import.meta.env.VITE_API_KEY;
-
 interface Field {
   name: string;
   label: string;
@@ -25,7 +22,10 @@ interface Field {
   required?: boolean;
 }
 
-const BaseForm: React.FC<{ fields: Field[] }> = ({ fields }) => {
+const BaseForm: React.FC<{
+  fields: Field[];
+  onSubmit: (formData: Record<string, string | number | File>) => void;
+}> = ({ fields, onSubmit }) => {
   const [formData, setFormData] = useState<
     Record<string, string | number | File>
   >({});
@@ -82,9 +82,7 @@ const BaseForm: React.FC<{ fields: Field[] }> = ({ fields }) => {
         finalData.profileImage = response.data.secure_url;
       }
 
-      await axios.post(`${API_URL}/users`, finalData, {
-        headers: { Authorization: `Bearer ${API_KEY}` },
-      });
+      onSubmit(finalData);
 
       setFormData({});
       setErrors({});
