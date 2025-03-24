@@ -8,25 +8,25 @@ import { putItemRequest } from "../../services/thunks/put.item";
 
 export const getAdminRequest = getItemRequest<IAdmin>(
   "admin",
-  `${BASE_URL}/${REQUEST.admin}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const getAdminsRequest = getAllItemRequest<IAdmin>(
   "admins",
-  `${BASE_URL}/${REQUEST.admin}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const postAdminRequest = postItemRequest<IAdmin, IBaseAdmin>(
   "admin",
-  `${BASE_URL}/${REQUEST.admin}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const editAdminRequest = putItemRequest<IAdmin>(
   "admin",
-  `${BASE_URL}/${REQUEST.admin}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const deleteAdminRequest = deleteItemRequest<IAdmin>(
   "admin",
-  `${BASE_URL}/${REQUEST.admin}`
+  `${BASE_URL}/${REQUEST.user}`
 );
