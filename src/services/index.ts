@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiKey = import.meta.env.VITE_CRUDAPI_API_KEY as string;
+const apiKey = import.meta.env.VITE_API_KEY as string;
 
 const $crudAxios = axios.create({
   headers: {
