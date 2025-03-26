@@ -1,6 +1,6 @@
 import { IBaseResponse } from "./response.interface";
 
-type IWeekDays =
+export type IWeekDays =
   | "monday"
   | "tuesday"
   | "wednesday"
@@ -9,11 +9,14 @@ type IWeekDays =
   | "saturday"
   | "sunday";
 
-interface IWorkingDay {
-  day: IWeekDays;
+export interface IWorkingDay {
   startHours: string;
   endHours: string;
   booked: boolean;
+}
+
+export interface IWorkingDays {
+  [key: string]: IWorkingDay[];
 }
 
 export interface IBaseCourier {
@@ -26,14 +29,7 @@ export interface IBaseCourier {
   profileImage: string;
   role: "admin" | "user" | "courier";
   vehicle: string;
-  workingDays: [
-    IWorkingDay,
-    IWorkingDay,
-    IWorkingDay,
-    IWorkingDay,
-    IWorkingDay,
-    ...IWorkingDay[]
-  ];
+  workingDays: IWorkingDays;
   totalRequests: string[];
 }
 

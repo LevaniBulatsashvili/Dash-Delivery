@@ -9,12 +9,18 @@ import {
   FormControl,
   Box,
   SelectChangeEvent,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+// Define the constants for Cloudinary
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-interface Field {
+// Define the field type
+export interface Field {
   name: string;
   label: string;
   type: "text" | "email" | "password" | "number" | "file" | "select";
@@ -25,12 +31,16 @@ interface Field {
 const BaseForm: React.FC<{
   fields: Field[];
   onSubmit: (formData: Record<string, string | number | File>) => void;
-}> = ({ fields, onSubmit }) => {
+  defaultValues: Record<string, string | number | File>;
+  sx?: object;
+}> = ({ fields, onSubmit, defaultValues, sx }) => {
   const [formData, setFormData] = useState<
     Record<string, string | number | File>
-  >({});
+  >(defaultValues || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const handleChange = (
     event:
@@ -77,13 +87,10 @@ const BaseForm: React.FC<{
         const uploadData = new FormData();
         uploadData.append("file", formData.profileImage);
         uploadData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
         const response = await axios.post(CLOUDINARY_UPLOAD_URL, uploadData);
         finalData.profileImage = response.data.secure_url;
       }
-
       onSubmit(finalData);
-
       setFormData({});
       setErrors({});
       alert("Form submitted successfully!");
@@ -99,7 +106,7 @@ const BaseForm: React.FC<{
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ maxWidth: 400, mx: "auto", p: 2 }}
+      sx={{ maxWidth: 400, mx: "auto", p: 2, ...sx }} // Apply sx prop passed from parent
     >
       {fields.map(({ name, label, type, options }) => (
         <Box key={name} mb={2}>
@@ -128,6 +135,30 @@ const BaseForm: React.FC<{
                 onChange={handleFileChange}
               />
             </Button>
+          ) : type === "password" ? (
+            <TextField
+              fullWidth
+              label={label}
+              name={name}
+              type={showPassword ? "text" : "password"}
+              value={formData[name] || ""}
+              onChange={handleChange}
+              error={!!errors[name]}
+              helperText={errors[name]}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           ) : (
             <TextField
               fullWidth
