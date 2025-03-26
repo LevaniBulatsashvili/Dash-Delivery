@@ -1,3 +1,5 @@
+import { IAdmin } from "./admin.interface";
+import { ICourier } from "./courier.interface";
 import { IBaseResponse } from "./response.interface";
 
 interface IAdress {
@@ -18,3 +20,4 @@ export interface IBaseUser {
 }
 
 export interface IUser extends IBaseResponse, IBaseUser {}
+export type IRandomUser = IUser | IAdmin | ICourier;
