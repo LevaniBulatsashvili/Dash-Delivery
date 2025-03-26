@@ -15,11 +15,9 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-// Define the constants for Cloudinary
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-// Define the field type
 export interface Field {
   name: string;
   label: string;
@@ -82,14 +80,22 @@ const BaseForm: React.FC<{
 
     try {
       const finalData = { ...formData };
-
       if (formData.profileImage instanceof File) {
         const uploadData = new FormData();
         uploadData.append("file", formData.profileImage);
-        uploadData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-        const response = await axios.post(CLOUDINARY_UPLOAD_URL, uploadData);
-        finalData.profileImage = response.data.secure_url;
+        uploadData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET); 
+
+        console.log("Cloudinary Upload URL:", CLOUDINARY_UPLOAD_URL);
+        console.log("Upload Preset:", CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await axios.post(CLOUDINARY_UPLOAD_URL, uploadData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log("Cloudinary Response:", response.data);
+        finalData.profileImage = response.data.secure_url; 
       }
+
       onSubmit(finalData);
       setFormData({});
       setErrors({});
@@ -106,7 +112,7 @@ const BaseForm: React.FC<{
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ maxWidth: 400, mx: "auto", p: 2, ...sx }} // Apply sx prop passed from parent
+      sx={{ maxWidth: 400, mx: "auto", p: 2, ...sx }}
     >
       {fields.map(({ name, label, type, options }) => (
         <Box key={name} mb={2}>
@@ -145,6 +151,7 @@ const BaseForm: React.FC<{
               onChange={handleChange}
               error={!!errors[name]}
               helperText={errors[name]}
+              InputLabelProps={{ shrink: true }} 
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
