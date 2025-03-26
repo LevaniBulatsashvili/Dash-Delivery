@@ -8,25 +8,25 @@ import { putItemRequest } from "../../services/thunks/put.item";
 
 export const getCourierRequest = getItemRequest<ICourier>(
   "courier",
-  `${BASE_URL}/${REQUEST.courier}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const getCouriersRequest = getAllItemRequest<ICourier>(
   "couriers",
-  `${BASE_URL}/${REQUEST.courier}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const postCourierRequest = postItemRequest<ICourier, IBaseCourier>(
   "courier",
-  `${BASE_URL}/${REQUEST.courier}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const editCourierRequest = putItemRequest<ICourier>(
   "courier",
-  `${BASE_URL}/${REQUEST.courier}`
+  `${BASE_URL}/${REQUEST.user}`
 );
 
 export const deleteCourierRequest = deleteItemRequest<ICourier>(
   "courier",
-  `${BASE_URL}/${REQUEST.courier}`
+  `${BASE_URL}/${REQUEST.user}`
 );

@@ -54,10 +54,12 @@ const courierSlice = createSlice({
       })
       .addCase(
         getCouriersRequest.fulfilled,
-        (state, { payload: couriers }: PayloadAction<ICourier[]>) => {
+        (state, { payload: allUsers }: PayloadAction<ICourier[]>) => {
           state.loading = false;
           state.error = null;
-          state.courierList = couriers;
+          state.courierList = allUsers.filter(
+            (user) => user.role === "courier"
+          );
         }
       )
       .addCase(
@@ -101,6 +103,7 @@ const courierSlice = createSlice({
             if (courier._uuid !== updatedCourier._uuid) return courier;
             return updatedCourier;
           });
+          state.courier = updatedCourier;
         }
       )
       .addCase(

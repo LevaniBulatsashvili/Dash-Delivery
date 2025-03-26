@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../../interface/user.interface";
+import { IRandomUser, IUser } from "../../interface/user.interface";
 import { RootState } from "../";
 import {
   deleteUserRequest,
@@ -10,15 +10,15 @@ import {
 } from "./user.thunk";
 
 interface IUserState {
-  userList: IUser[];
-  user: IUser;
+  userList: IRandomUser[];
+  user: IRandomUser;
   loading: boolean;
   error: null | string | undefined;
 }
 
 const initialState: IUserState = {
   userList: [],
-  user: {} as IUser,
+  user: {} as IRandomUser,
   loading: false,
   error: null,
 };
@@ -26,7 +26,11 @@ const initialState: IUserState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    logout(state) {
+      state.user = {} as IUser;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUserRequest.pending, (state) => {
@@ -34,7 +38,7 @@ const userSlice = createSlice({
       })
       .addCase(
         getUserRequest.fulfilled,
-        (state, { payload: user }: PayloadAction<IUser>) => {
+        (state, { payload: user }: PayloadAction<IRandomUser>) => {
           state.loading = false;
           state.error = null;
           state.user = user;
@@ -54,7 +58,7 @@ const userSlice = createSlice({
       })
       .addCase(
         getUsersRequest.fulfilled,
-        (state, { payload: users }: PayloadAction<IUser[]>) => {
+        (state, { payload: users }: PayloadAction<IRandomUser[]>) => {
           state.loading = false;
           state.error = null;
           state.userList = users;
@@ -74,7 +78,7 @@ const userSlice = createSlice({
       })
       .addCase(
         postUserRequest.fulfilled,
-        (state, { payload: user }: PayloadAction<IUser>) => {
+        (state, { payload: user }: PayloadAction<IRandomUser>) => {
           state.loading = false;
           state.error = null;
           state.userList = [user, ...state.userList];
@@ -94,13 +98,14 @@ const userSlice = createSlice({
       })
       .addCase(
         editUserRequest.fulfilled,
-        (state, { payload: updatedUser }: PayloadAction<IUser>) => {
+        (state, { payload: updatedUser }: PayloadAction<IRandomUser>) => {
           state.loading = false;
           state.error = null;
           state.userList = state.userList.map((user) => {
             if (user._uuid !== updatedUser._uuid) return user;
             return updatedUser;
           });
+          if (state.user._uuid === updatedUser._uuid) state.user = updatedUser;
         }
       )
       .addCase(
@@ -117,7 +122,7 @@ const userSlice = createSlice({
       })
       .addCase(
         deleteUserRequest.fulfilled,
-        (state, { payload: deletedUser }: PayloadAction<IUser>) => {
+        (state, { payload: deletedUser }: PayloadAction<IRandomUser>) => {
           state.loading = false;
           state.error = null;
           state.userList = state.userList.filter(
@@ -135,5 +140,6 @@ const userSlice = createSlice({
   },
 });
 
+export const { logout } = userSlice.actions;
 export const userSelector = (state: RootState) => state.user;
 export default userSlice.reducer;
