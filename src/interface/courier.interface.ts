@@ -20,6 +20,7 @@ export interface IWorkingDays {
 }
 
 export interface IBaseCourier {
+  _uuid: string;
   firstName: string;
   lastName: string;
   pid: number;

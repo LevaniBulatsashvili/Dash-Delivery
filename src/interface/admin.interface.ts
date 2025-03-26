@@ -1,6 +1,7 @@
 import { IBaseResponse } from "./response.interface";
 
 export interface IBaseAdmin {
+  _uuid: string;
   firstName: string;
   lastName: string;
   pid: number;

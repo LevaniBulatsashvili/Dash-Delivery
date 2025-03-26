@@ -8,6 +8,7 @@ interface IAdress {
 }
 
 export interface IBaseUser {
+  _uuid: string;
   firstName: string;
   lastName: string;
   pid: number;

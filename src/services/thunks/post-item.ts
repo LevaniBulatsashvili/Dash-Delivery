@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import $crudAxios from "..";
-import { IGetAllResponse } from "../../interface/response.interface"; // Assuming the interface is defined correctly
+import { IGetAllResponse } from "../../interface/response.interface";
 
 export const postItemRequest = <T extends object, U extends object>(
   name: string,
