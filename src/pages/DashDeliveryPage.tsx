@@ -1,21 +1,15 @@
-import { useNavigate } from "react-router-dom";
 import Courier from "../features/courier/components/Courier";
 import { useAppSelector } from "../hooks/redux";
 import { userSelector } from "../store/user/user.slice";
-import { objectIsEmpty } from "../utils/objectIsEmpty";
-import { useEffect } from "react";
+import AdminPage from "../pages/admin/AdminPanel";
+import UserPanel from "../pages/user/UserPanel";
 
 const DashDeliveryPage = () => {
-  const navigate = useNavigate();
   const { user } = useAppSelector(userSelector);
 
-  useEffect(() => {
-    if (objectIsEmpty(user)) navigate("/login");
-  }, [navigate, user]);
-
   const loggedInAs = {
-    admin: [],
-    user: [],
+    admin: <AdminPage />,
+    user: <UserPanel />,
     courier: <Courier />,
   };
 

@@ -48,9 +48,7 @@ const CourierInfo = ({ courier }: ICourierInfo) => {
         >
           Courier Details
         </Typography>
-        <Button onClick={() => navigate("/dash-delivery?edit=true")}>
-          Edit
-        </Button>
+        <Button onClick={() => navigate("/dashboard?edit=true")}>Edit</Button>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

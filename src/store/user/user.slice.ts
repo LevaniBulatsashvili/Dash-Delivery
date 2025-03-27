@@ -9,6 +9,11 @@ import {
   postUserRequest,
 } from "./user.thunk";
 
+const loadUserFromLocalStorage = (): IRandomUser | null => {
+  const savedUser = localStorage.getItem("user");
+  return savedUser ? JSON.parse(savedUser) : null;
+};
+
 interface IUserState {
   userList: IRandomUser[];
   user: IRandomUser;
@@ -18,7 +23,7 @@ interface IUserState {
 
 const initialState: IUserState = {
   userList: [],
-  user: {} as IRandomUser,
+  user: loadUserFromLocalStorage() || ({} as IRandomUser),
   loading: false,
   error: null,
 };
@@ -82,6 +87,7 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = null;
           state.userList = [user, ...state.userList];
+          state.user = user;
         }
       )
       .addCase(

@@ -12,17 +12,14 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    localStorage.removeItem("userUuid");
     navigate("/login");
   };
 
   return (
     <AppBar position="sticky">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Link
-          component={RouterLink}
-          to="/dash-delivery"
-          sx={{ marginRight: 2 }}
-        >
+        <Link component={RouterLink} to="/dashboard" sx={{ marginRight: 2 }}>
           <Typography sx={{ color: "white" }} variant="h6">
             DashDelivery
           </Typography>

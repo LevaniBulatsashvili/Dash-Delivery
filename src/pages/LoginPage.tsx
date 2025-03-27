@@ -1,68 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../store/login/login.thunk";
 import { TextField, Button, Box } from "@mui/material";
-import { AppDispatch } from "../store";
-import { RootState } from "../store";
-import { loginSuccess } from "../store/login/login.slice";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { userSelector } from "../store/user/user.slice";
+import { getUserRequest } from "../store/user/user.thunk";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { userList } = useAppSelector(userSelector);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-
-  const {
-    isAuthenticated,
-    error: loginError,
-    user,
-  } = useSelector((state: RootState) => state.login);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
 
-    try {
-      await dispatch(loginUser(email, password));
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred.");
-      }
-    }
+    const user = userList.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (user) {
+      await dispatch(getUserRequest(user._uuid));
+      localStorage.setItem("userUuid", user._uuid);
+      navigate("dashboard");
+    } else setError("User Couldn't Be Found");
   };
 
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      navigate("/dashboard");
-      return; 
-    }
-
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser && !isAuthenticated) {
-      const parsedUser = JSON.parse(storedUser);
-      dispatch(
-        loginSuccess({
-          user: parsedUser.user,
-          admin: parsedUser.admin || null,
-          courier: parsedUser.courier || null,
-          role: parsedUser.role,
-        })
-      );
-      navigate("/dashboard");
-    }
-    if (loginError) {
-      setError(loginError);
-    }
-  }, [isAuthenticated, loginError, user, navigate, dispatch]);
-
-  const handleRegisterRedirect = () => {
-    navigate("/register");
-  };
+  const handleRegisterRedirect = () => navigate("/register");
 
   return (
     <Box
