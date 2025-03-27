@@ -34,7 +34,7 @@ const UsersList = ({ users }: IUserList) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Profile Image</TableCell>{" "}
+              <TableCell>Profile Image</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Email</TableCell>
