@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { userSelector } from "../../store/user/user.slice";
 import { IUser } from "../../interface/user.interface";
 import { ICourier } from "../../interface/courier.interface";
+import { IAdmin } from "../../admin.interface";
 
 const AdminPanel = () => {
   const { userList } = useSelector(userSelector);
@@ -16,6 +17,8 @@ const AdminPanel = () => {
   const couriers = userList.filter(
     (allUsers) => allUsers.role === "courier"
   ) as ICourier[];
+
+  const activeUser = useSelector((state: any) => state.user);
 
   return (
     <Box
@@ -31,6 +34,10 @@ const AdminPanel = () => {
       <Box sx={{ margin: "0 auto" }}>
         <Button onClick={() => setSelectedPage("users")}>Users</Button>
         <Button onClick={() => setSelectedPage("couriers")}>Couriers</Button>
+
+        {activeUser.role === "admin" && (
+          <Button onClick={() => setSelectedPage("admin")}>Admin</Button>
+        )}
       </Box>
 
       <Box
@@ -44,6 +51,7 @@ const AdminPanel = () => {
         <Container>
           {selectedPage === "users" && <UsersPage users={users} />}
           {selectedPage === "couriers" && <CouriersPage couriers={couriers} />}
+          {selectedPage === "admin" && <div>Admin Page Content</div>}{" "}
         </Container>
       </Box>
     </Box>
