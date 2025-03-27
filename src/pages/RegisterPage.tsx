@@ -5,75 +5,76 @@ import RoleSelector from "./registeritems/RoleSelector";
 import { baseFields } from "./registeritems/registerField";
 import GeoLocationInput from "../components/location/GeolocationInput";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { IAdress } from "../interface/user.interface";
+import { postItemRequest } from "../services/thunks/post-item";
 
-const RegistrationPage: React.FC = () => {
-  const [role, setRole] = useState<"admin" | "courier" | "user">("user");
-  const [geoLocation, setGeoLocation] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+
+const postUserRequest = postItemRequest("users", import.meta.env.VITE_API_URL);
+
+const RegisterPage: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [role, setRole] = useState<"admin" | "courier" | "user">("user");
+  const [adress, setAdress] = useState<IAdress>({ lng: "", lat: "" });
+ 
 
   const handleRoleChange = (event: SelectChangeEvent) => {
     setRole(event.target.value as "admin" | "courier" | "user");
-  };
+  }
 
-  const handleGeoLocationChange = (geoLocation: string) => {
-    setGeoLocation(geoLocation);
-  };
+  const handleGeoLocationChange = (location: string) => {
+    const [lat, lng] = location.split(", ");
+    setAdress({
+      lat: lat.trim(),
+      lng: lng.trim(),
+    })
+  }
+ 
 
-  const handleRegister = (formData: Record<string, string | number | File>) => {
-    setLoading(true);
-
-    const finalData: Record<string, string | number | File> = {
+  const handleFormSubmit = (formData: Record<string, string | number | File>) => {
+    const completeFormData = {
       ...formData,
-      role,
-    };
-
-    if (role === "user" && geoLocation) {
-      finalData.geolocation = geoLocation;
+      role,             // Ensure role is passed
+      adress,          // Ensure address is passed
     }
+ // dispatch(postUserRequest(completeFormData));
+ dispatch(postUserRequest(completeFormData)as any)
+ .then(() => {
+   console.log("Form submitted successfully");
+   navigate("/login"); // Navigate to the login page after successful submission
+ })
+ .catch((error:unknown) => {
+   console.error("Error submitting form:", error);
+ })
+ 
+}
+ 
 
-    try {
-      alert("Registration successful!");
-    } catch (error) {
-      console.error("Registration error:", error);
-      alert(
-        `An error occurred: ${error instanceof Error ? error.message : error}`
-      );
-    } finally {
-      setLoading(false);
-    }
+  
 
-    navigate("/login");
-  };
 
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", p: 2 }}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/login")}
-        sx={{ position: "absolute", top: 10, left: 10 }}
-      >
-        Back
-      </Button>
-
+     
       <RoleSelector role={role} onChange={handleRoleChange} />
 
-      {role === "user" && (
-        <GeoLocationInput onGeoLocationChange={handleGeoLocationChange} />
-      )}
+      
+      {role === "user" && <GeoLocationInput onGeoLocationChange={handleGeoLocationChange} />}
 
-      {loading ? (
-        <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
-      ) : (
-        <BaseForm
-          fields={baseFields}
-          onSubmit={handleRegister}
-          defaultValues={{ role, geolocation: geoLocation ?? "" }}
-        />
-      )}
+    
+     
+      <BaseForm
+        fields={baseFields}
+        onSubmit={handleFormSubmit}
+        defaultValues={{ name: "", email: "", password: "", profileImage: "" }}
+        sx={{ maxWidth: 500 }} 
+      />
     </Box>
-  );
-};
+  )
+}
 
-export default RegistrationPage;
+export default RegisterPage
+
+
+
