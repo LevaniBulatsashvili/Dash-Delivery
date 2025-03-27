@@ -1,5 +1,5 @@
 import { BASE_URL, REQUEST } from "../../apiConfig";
-import { IRandomUser, IBaseUser } from "../../interface/user.interface";
+import { IRandomUser } from "../../interface/user.interface";
 import { deleteItemRequest } from "../../services/thunks/delete-item";
 import { getItemRequest } from "../../services/thunks/get-item";
 import { getAllItemRequest } from "../../services/thunks/get-items";
@@ -16,7 +16,7 @@ export const getUsersRequest = getAllItemRequest<IRandomUser>(
   `${BASE_URL}/${REQUEST.user}`
 );
 
-export const postUserRequest = postItemRequest<IRandomUser, IBaseUser>(
+export const postUserRequest = postItemRequest<IRandomUser, IRandomUser>(
   "user",
   `${BASE_URL}/${REQUEST.user}`
 );

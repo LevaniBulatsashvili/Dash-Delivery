@@ -40,12 +40,15 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
 
   const addThirtySeconds = (time: string) => {
     let [startHours, startMinutes] = time.split(":").map(Number);
+
     startMinutes += 30;
 
     if (startMinutes >= 60) {
       startMinutes -= 60;
       startHours += 1;
     }
+
+    if (startHours >= 24) startHours = 0;
 
     return `${startHours.toString().padStart(2, "0")}:${startMinutes
       .toString()
@@ -54,8 +57,10 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
 
   const addWorkingDay = (day: IWeekDays) => {
     const lastWorkingDay =
-      courierData.workingDays[day][courierData.workingDays[day].length - 1]
-        .endHours;
+      courierData.workingDays[day]?.length > 0
+        ? courierData.workingDays[day][courierData.workingDays[day].length - 1]
+            .endHours
+        : "23:30";
     const newStartHours = addThirtySeconds(lastWorkingDay);
     const newEndHours = addThirtySeconds(newStartHours);
 
