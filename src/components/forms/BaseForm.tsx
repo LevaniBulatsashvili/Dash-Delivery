@@ -80,10 +80,12 @@ const BaseForm: React.FC<{
 
     try {
       const finalData = { ...formData };
+
       if (formData.profileImage instanceof File) {
         const uploadData = new FormData();
         uploadData.append("file", formData.profileImage);
-        uploadData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET); 
+        uploadData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        uploadData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
 
         console.log("Cloudinary Upload URL:", CLOUDINARY_UPLOAD_URL);
         console.log("Upload Preset:", CLOUDINARY_UPLOAD_PRESET);
@@ -93,9 +95,12 @@ const BaseForm: React.FC<{
         });
 
         console.log("Cloudinary Response:", response.data);
-        finalData.profileImage = response.data.secure_url; 
+        if (response.data.secure_url) {
+          finalData.profileImage = response.data.secure_url;
+        } else {
+          throw new Error("Cloudinary did not return a valid image URL.");
+        }
       }
-
       onSubmit(finalData);
       setFormData({});
       setErrors({});
@@ -151,7 +156,7 @@ const BaseForm: React.FC<{
               onChange={handleChange}
               error={!!errors[name]}
               helperText={errors[name]}
-              InputLabelProps={{ shrink: true }} 
+              InputLabelProps={{ shrink: true }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

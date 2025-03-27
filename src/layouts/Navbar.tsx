@@ -1,4 +1,12 @@
-import { Box, AppBar, Toolbar, Typography, Button, Link } from "@mui/material";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Link,
+  Avatar,
+} from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/redux";
 import { logout, userSelector } from "../store/user/user.slice";
@@ -25,7 +33,7 @@ const Header = () => {
           </Typography>
         </Link>
 
-        <Box>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           {objectIsEmpty(user) ? (
             <>
               <Link component={RouterLink} to="/login" sx={{ marginRight: 2 }}>
@@ -36,9 +44,16 @@ const Header = () => {
               </Link>
             </>
           ) : (
-            <Button color="inherit" onClick={handleLogout}>
-              Logout
-            </Button>
+            <>
+              <Avatar
+                alt={`${user.firstName} ${user.lastName}`}
+                src={user.profileImage}
+                sx={{ width: 40, height: 40, marginRight: 2 }}
+              />
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
           )}
         </Box>
       </Toolbar>

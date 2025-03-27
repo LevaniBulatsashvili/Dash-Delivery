@@ -8,6 +8,7 @@ import {
   TableRow,
   Paper,
   Typography,
+  Avatar,
 } from "@mui/material";
 import { ICourier } from "../../interface/courier.interface";
 import { useAppDispatch } from "../../hooks/redux";
@@ -23,7 +24,7 @@ const CouriersList = ({ couriers }: ICouriersList) => {
   return (
     <div>
       <Typography
-        sx={{ fontSize: "1.6rem", ontWeight: 600, marginBottom: 2 }}
+        sx={{ fontSize: "1.6rem", fontWeight: 600, marginBottom: 2 }}
         component="h1"
       >
         All Couriers
@@ -32,6 +33,7 @@ const CouriersList = ({ couriers }: ICouriersList) => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Profile Image</TableCell>{" "}
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Email</TableCell>
@@ -42,6 +44,13 @@ const CouriersList = ({ couriers }: ICouriersList) => {
           <TableBody>
             {couriers.map((courier) => (
               <TableRow key={courier._uuid}>
+                <TableCell>
+                  <Avatar
+                    alt={`${courier.firstName} ${courier.lastName}`}
+                    src={courier.profileImage}
+                    sx={{ width: 40, height: 40 }}
+                  />
+                </TableCell>
                 <TableCell>{courier.firstName}</TableCell>
                 <TableCell>{courier.lastName}</TableCell>
                 <TableCell>{courier.email}</TableCell>

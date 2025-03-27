@@ -9,6 +9,7 @@ import {
   Paper,
   Box,
   Typography,
+  Avatar,
 } from "@mui/material";
 import { IUser } from "../../interface/user.interface";
 import { useAppDispatch } from "../../hooks/redux";
@@ -23,13 +24,17 @@ const UsersList = ({ users }: IUserList) => {
 
   return (
     <Box>
-      <Typography sx={{ fontSize: "1.6rem",ontWeight: 600, marginBottom: 2 }} component="h1">
+      <Typography
+        sx={{ fontSize: "1.6rem", fontWeight: 600, marginBottom: 2 }}
+        component="h1"
+      >
         All Users
       </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Profile Image</TableCell>{" "}
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Email</TableCell>
@@ -40,6 +45,13 @@ const UsersList = ({ users }: IUserList) => {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user._uuid}>
+                <TableCell>
+                  <Avatar
+                    alt={`${user.firstName} ${user.lastName}`}
+                    src={user.profileImage} 
+                    sx={{ width: 40, height: 40 }} 
+                  />
+                </TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
                 <TableCell>{user.email}</TableCell>

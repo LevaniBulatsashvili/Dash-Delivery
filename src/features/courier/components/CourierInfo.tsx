@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface IInfoDisplay {
@@ -26,6 +26,7 @@ interface ICourierInfo {
     pid: number;
     vehicle: string;
     totalRequests: string[];
+    profileImage: string;
   };
 }
 
@@ -40,7 +41,13 @@ const CourierInfo = ({ courier }: ICourierInfo) => {
         width: "100%",
       }}
     >
-      <Box sx={{ display: "flex" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography
           sx={{ margin: "0 auto 1rem auto" }}
           variant="h5"
@@ -49,6 +56,14 @@ const CourierInfo = ({ courier }: ICourierInfo) => {
           Courier Details
         </Typography>
         <Button onClick={() => navigate("/dashboard?edit=true")}>Edit</Button>
+      </Box>
+
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+        <Avatar
+          alt={`${courier.firstName} ${courier.lastName}`}
+          src={courier.profileImage}
+          sx={{ width: 100, height: 100 }}
+        />
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
