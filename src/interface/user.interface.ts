@@ -2,9 +2,9 @@ import { IAdmin } from "./admin.interface";
 import { ICourier } from "./courier.interface";
 import { IBaseResponse } from "./response.interface";
 
-interface IAdress {
-  lng: number;
-  lat: number;
+export interface IAdress {
+  lng: string;
+  lat: string;
 }
 
 export interface IBaseUser {
