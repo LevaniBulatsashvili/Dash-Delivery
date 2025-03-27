@@ -1,8 +1,14 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 
 interface RoleSelectorProps {
-  role: "admin" | "courier" | "user"; // restrict the role to specific values
-  onChange: (event: SelectChangeEvent<string>) => void; // accept SelectChangeEvent with string type
+  role: "admin" | "courier" | "user";
+  onChange: (event: SelectChangeEvent<string>) => void;
 }
 const RoleSelector: React.FC<RoleSelectorProps> = ({ role, onChange }) => {
   return (
