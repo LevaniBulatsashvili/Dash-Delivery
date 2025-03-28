@@ -130,11 +130,18 @@ const UsersList = ({ users, couriers }: IUserList) => {
                 </TableHead>
                 <TableBody>
                   {couriers
-                    .filter((courier) =>
-                      (selectedUser?.requestedCouriers || []).some(
-                        (c) => c._uuid === courier._uuid
-                      )
-                    )
+                    .filter((courier) => {
+                      const hasRequested = courier.totalRequests.includes(
+                        selectedUser.email
+                      );
+                      return (
+                        hasRequested &&
+                        Object.keys(courier.workingDays).some(
+                          (day) =>
+                            courier.workingDays[day].some((wd) => wd.booked)
+                        )
+                      );
+                    })
                     .map((courier) => (
                       <TableRow key={courier._uuid}>
                         <TableCell>
@@ -143,8 +150,10 @@ const UsersList = ({ users, couriers }: IUserList) => {
                         <TableCell>{courier.vehicle}</TableCell>
                         <TableCell>
                           {Object.keys(courier.workingDays)
-                            .filter(
-                              (day) => courier.workingDays[day].length > 0
+                            .filter((day) =>
+                              courier.workingDays[day].some(
+                                (wd) => wd.booked 
+                              )
                             )
                             .map((day) => {
                               const dayName =
@@ -153,11 +162,12 @@ const UsersList = ({ users, couriers }: IUserList) => {
                                 <Box key={day}>
                                   <strong>{dayName}:</strong>{" "}
                                   {courier.workingDays[day]
-                                    .map(
-                                      (wd) =>
-                                        `${wd.startHours} - ${wd.endHours}`
-                                    )
-                                    .join(", ")}
+                                    .filter((wd) => wd.booked)
+                                    .map((wd, index) => (
+                                      <div key={index}>
+                                        {wd.startHours} - {wd.endHours}
+                                      </div>
+                                    ))}
                                 </Box>
                               );
                             })}

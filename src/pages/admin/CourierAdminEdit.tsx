@@ -5,19 +5,16 @@ import WeekdaySchedule from "../../features/courier/components/WeekdaySchedule";
 import { ICourier, IWeekDays } from "../../interface/courier.interface";
 import { useAppDispatch } from "../../hooks/redux";
 import { editUserRequest } from "../../store/user/user.thunk";
-
 interface ICourierAdminEdit {
   courier: ICourier;
   onSubmit: (updatedCourier: ICourier) => void;
 }
-
-const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
+const CourierAdminEdit = ({ courier }: ICourierAdminEdit) => {
   const [courierData, setCourierData] = useState<ICourier>({ ...courier });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const handleTimeChange = (
     day: IWeekDays,
     index: number,
@@ -33,10 +30,8 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
       endHours: endTime,
       booked: false,
     };
-
     setCourierData({ ...courierData, workingDays: updatedWorkingDays });
   };
-
   const addWorkingDay = (day: IWeekDays) => {
     const lastWorkingDay =
       courierData.workingDays[day]?.length > 0
@@ -45,7 +40,6 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
         : "23:30";
     const newStartHours = addThirtySeconds(lastWorkingDay);
     const newEndHours = addThirtySeconds(newStartHours);
-
     const updatedWorkingDays = {
       ...courierData.workingDays,
       [day]: [
@@ -57,27 +51,20 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
         },
       ],
     };
-
     setCourierData({ ...courierData, workingDays: updatedWorkingDays });
   };
-
   const addThirtySeconds = (time: string) => {
     let [startHours, startMinutes] = time.split(":").map(Number);
-
     startMinutes += 30;
-
     if (startMinutes >= 60) {
       startMinutes -= 60;
       startHours += 1;
     }
-
     if (startHours >= 24) startHours = 0;
-
     return `${startHours.toString().padStart(2, "0")}:${startMinutes
       .toString()
       .padStart(2, "0")}`;
   };
-
   const deleteWorkingDay = (day: IWeekDays, index: number) => {
     const updatedWorkingDays = {
       ...courierData.workingDays,
@@ -85,7 +72,6 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
     };
     setCourierData({ ...courierData, workingDays: updatedWorkingDays });
   };
-
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
@@ -98,7 +84,6 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
       setLoading(false);
     }
   };
-
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", p: 2 }}>
       <Grid2 container spacing={3} alignItems="flex-start">
@@ -127,5 +112,4 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
     </Box>
   );
 };
-
 export default CourierAdminEdit;
