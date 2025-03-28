@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Typography, Grid2 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import WeekdaySchedule from "../../features/courier/components/WeekdaySchedule";
 import { ICourier, IWeekDays } from "../../interface/courier.interface";
 
@@ -10,6 +11,9 @@ interface ICourierAdminEdit {
 
 const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
   const [courierData, setCourierData] = useState<ICourier>({ ...courier });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); 
 
   const handleTimeChange = (
     day: IWeekDays,
@@ -79,8 +83,47 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
     setCourierData({ ...courierData, workingDays: updatedWorkingDays });
   };
 
-  const handleSubmit = () => {
-    onSubmit(courierData);
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    const dataToUpdate = [
+      {
+        email: courierData.email, 
+        firstName: courierData.firstName,
+        lastName: courierData.lastName,
+        password: courierData.password,
+        phoneNumber: courierData.phoneNumber,
+        pid: courierData.pid,
+        profileImage: courierData.profileImage || "",
+        role: "courier", 
+        vehicle: courierData.vehicle, 
+        workingDays: courierData.workingDays,
+        totalRequests: courierData.totalRequests || [],
+      },
+    ];
+
+    try {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+        },
+        body: JSON.stringify(dataToUpdate),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update courier data");
+      }
+
+      const updatedCourier = await response.json();
+      onSubmit(updatedCourier); 
+      navigate("/dashboard"); 
+    } catch{
+      setError("Error saving changes. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -99,8 +142,15 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
         </Grid2>
       </Grid2>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <button onClick={handleSubmit}>Save Changes</button>
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
+        </button>
       </Box>
+      {error && (
+        <Box sx={{ mt: 2, color: "red" }}>
+          <Typography variant="body2">{error}</Typography>
+        </Box>
+      )}
     </Box>
   );
 };
