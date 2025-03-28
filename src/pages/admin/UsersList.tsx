@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import {
   Button,
   Table,
@@ -10,17 +11,46 @@ import {
   Box,
   Typography,
   Avatar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { IUser } from "../../interface/user.interface";
+import { ICourier } from "../../interface/courier.interface";
 import { useAppDispatch } from "../../hooks/redux";
 import { deleteUserRequest } from "../../store/user/user.thunk";
 
 interface IUserList {
   users: IUser[];
+  couriers: ICourier[];
 }
 
-const UsersList = ({ users }: IUserList) => {
+const UsersList = ({ users, couriers }: IUserList) => {
   const dispatch = useAppDispatch();
+
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const openModalButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedUser(null);
+    if (openModalButtonRef.current) {
+      openModalButtonRef.current.focus();
+    }
+  };
+
+  const handleOpenModal = (user: IUser) => {
+    setSelectedUser(user);
+    setOpenModal(true);
+  };
+
+  useEffect(() => {
+    if (openModal && openModalButtonRef.current) {
+      openModalButtonRef.current.blur();
+    }
+  }, [openModal]);
 
   return (
     <Box>
@@ -48,8 +78,8 @@ const UsersList = ({ users }: IUserList) => {
                 <TableCell>
                   <Avatar
                     alt={`${user.firstName} ${user.lastName}`}
-                    src={user.profileImage} 
-                    sx={{ width: 40, height: 40 }} 
+                    src={user.profileImage}
+                    sx={{ width: 40, height: 40 }}
                   />
                 </TableCell>
                 <TableCell>{user.firstName}</TableCell>
@@ -58,11 +88,13 @@ const UsersList = ({ users }: IUserList) => {
                 <TableCell>{user.phoneNumber}</TableCell>
                 <TableCell>
                   <Button
+                    ref={openModalButtonRef}
                     variant="outlined"
                     color="secondary"
                     sx={{ marginRight: 1 }}
+                    onClick={() => handleOpenModal(user)}
                   >
-                    Edit
+                    View More
                   </Button>
                   <Button
                     variant="outlined"
@@ -77,6 +109,72 @@ const UsersList = ({ users }: IUserList) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-hidden={!openModal}
+      >
+        <DialogTitle>User Details</DialogTitle>
+        <DialogContent>
+          {selectedUser && (
+            <Box>
+              <Typography variant="h6">Requested Couriers:</Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Courier Name</TableCell>
+                    <TableCell>Vehicle</TableCell>
+                    <TableCell>Working Days</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {couriers
+                    .filter((courier) =>
+                      (selectedUser?.requestedCouriers || []).some(
+                        (c) => c._uuid === courier._uuid
+                      )
+                    )
+                    .map((courier) => (
+                      <TableRow key={courier._uuid}>
+                        <TableCell>
+                          {courier.firstName} {courier.lastName}
+                        </TableCell>
+                        <TableCell>{courier.vehicle}</TableCell>
+                        <TableCell>
+                          {Object.keys(courier.workingDays)
+                            .filter(
+                              (day) => courier.workingDays[day].length > 0
+                            )
+                            .map((day) => {
+                              const dayName =
+                                day.charAt(0).toUpperCase() + day.slice(1);
+                              return (
+                                <Box key={day}>
+                                  <strong>{dayName}:</strong>{" "}
+                                  {courier.workingDays[day]
+                                    .map(
+                                      (wd) =>
+                                        `${wd.startHours} - ${wd.endHours}`
+                                    )
+                                    .join(", ")}
+                                </Box>
+                              );
+                            })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

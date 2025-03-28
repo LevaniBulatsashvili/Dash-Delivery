@@ -13,6 +13,7 @@ import {
 import { ICourier } from "../../interface/courier.interface";
 import { useAppDispatch } from "../../hooks/redux";
 import { deleteUserRequest } from "../../store/user/user.thunk";
+import { useNavigate } from "react-router-dom";
 
 interface ICouriersList {
   couriers: ICourier[];
@@ -20,6 +21,11 @@ interface ICouriersList {
 
 const CouriersList = ({ couriers }: ICouriersList) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleEdit = (courierId: string) => {
+    navigate(`/admin/courier/edit/${courierId}`);
+  };
 
   return (
     <div>
@@ -60,13 +66,14 @@ const CouriersList = ({ couriers }: ICouriersList) => {
                     variant="outlined"
                     color="secondary"
                     sx={{ marginRight: 1 }}
+                    onClick={() => handleEdit(courier._uuid)} 
                   >
                     Edit
                   </Button>
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={() => dispatch(deleteUserRequest(courier._uuid))}
+                    onClick={() => dispatch(deleteUserRequest(courier._uuid))} 
                   >
                     Delete
                   </Button>

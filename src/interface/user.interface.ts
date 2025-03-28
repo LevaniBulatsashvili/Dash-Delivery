@@ -18,6 +18,7 @@ export interface IBaseUser {
   profileImage: string;
   role: "admin" | "user" | "courier";
   address: IAdress;
+  requestedCouriers: ICourier[];
 }
 
 export interface IUser extends IBaseResponse, IBaseUser {}

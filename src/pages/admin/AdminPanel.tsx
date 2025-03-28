@@ -42,7 +42,9 @@ const AdminPanel = () => {
         }}
       >
         <Container>
-          {selectedPage === "users" && <UsersPage users={users} />}
+          {selectedPage === "users" && (
+            <UsersPage users={users} couriers={couriers} />
+          )}
           {selectedPage === "couriers" && <CouriersPage couriers={couriers} />}
         </Container>
       </Box>
