@@ -2,7 +2,8 @@ import Courier from "../features/courier/components/Courier";
 import { useAppSelector } from "../hooks/redux";
 import { userSelector } from "../store/user/user.slice";
 import AdminPage from "../pages/admin/AdminPanel";
-import UserPanel from "../pages/user/UserPanel";
+import UserPanel from "../features/user/components/UserPanel";
+
 
 const DashDeliveryPage = () => {
   const { user } = useAppSelector(userSelector);
