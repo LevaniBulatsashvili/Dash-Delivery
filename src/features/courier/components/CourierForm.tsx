@@ -5,9 +5,14 @@ interface ICourierForm {
   handleFormSubmit: (
     updatedData: Record<string, string | number | File>
   ) => void;
+  canSubmit: boolean;
 }
 
-const CourierForm = ({ formData, handleFormSubmit }: ICourierForm) => {
+const CourierForm = ({
+  formData,
+  handleFormSubmit,
+  canSubmit,
+}: ICourierForm) => {
   const fields = [
     {
       name: "firstName",
@@ -55,6 +60,7 @@ const CourierForm = ({ formData, handleFormSubmit }: ICourierForm) => {
       defaultValues={
         formData as unknown as Record<string, string | number | File>
       }
+      canSubmit={canSubmit}
       sx={{ padding: "1rem 0", marginLeft: 0 }}
     />
   );
