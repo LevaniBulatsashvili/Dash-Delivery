@@ -3,6 +3,8 @@ import { Box, Typography, Grid2 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import WeekdaySchedule from "../../features/courier/components/WeekdaySchedule";
 import { ICourier, IWeekDays } from "../../interface/courier.interface";
+import { useAppDispatch } from "../../hooks/redux";
+import { editUserRequest } from "../../store/user/user.thunk";
 
 interface ICourierAdminEdit {
   courier: ICourier;
@@ -13,7 +15,8 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
   const [courierData, setCourierData] = useState<ICourier>({ ...courier });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleTimeChange = (
     day: IWeekDays,
@@ -86,40 +89,10 @@ const CourierAdminEdit = ({ courier, onSubmit }: ICourierAdminEdit) => {
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
-    const dataToUpdate = [
-      {
-        email: courierData.email, 
-        firstName: courierData.firstName,
-        lastName: courierData.lastName,
-        password: courierData.password,
-        phoneNumber: courierData.phoneNumber,
-        pid: courierData.pid,
-        profileImage: courierData.profileImage || "",
-        role: "courier", 
-        vehicle: courierData.vehicle, 
-        workingDays: courierData.workingDays,
-        totalRequests: courierData.totalRequests || [],
-      },
-    ];
-
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        },
-        body: JSON.stringify(dataToUpdate),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update courier data");
-      }
-
-      const updatedCourier = await response.json();
-      onSubmit(updatedCourier); 
-      navigate("/dashboard"); 
-    } catch{
+      await dispatch(editUserRequest(courierData));
+      navigate("/dashboard");
+    } catch {
       setError("Error saving changes. Please try again.");
     } finally {
       setLoading(false);
