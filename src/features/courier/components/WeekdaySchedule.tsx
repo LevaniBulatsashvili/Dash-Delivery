@@ -118,6 +118,7 @@ const WeekdaySchedule: React.FC<IWeekdayScheduleProps> = ({
                           workingDay.endHours
                         )
                       }
+                      disabled={workingDay.booked}
                       label="Start Time"
                     >
                       {hours.map((hour) => (
@@ -140,6 +141,7 @@ const WeekdaySchedule: React.FC<IWeekdayScheduleProps> = ({
                           e.target.value
                         )
                       }
+                      disabled={workingDay.booked}
                       label="End Time"
                     >
                       {hours.map((hour) => (

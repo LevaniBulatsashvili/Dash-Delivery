@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ICourier, IWeekDays } from "../../../interface/courier.interface";
-import { Box, Typography, Button, Grid2 } from "@mui/material";
+import { Box, Typography, Grid2 } from "@mui/material";
 import CourierForm from "./CourierForm";
 import WeekdaySchedule from "./WeekdaySchedule";
 
@@ -15,7 +15,11 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
   const handleFormSubmit = (
     updatedData: Record<string, string | number | File>
   ) => {
-    const updatedCourier = { ...courierData, ...updatedData };
+    const updatedCourier = {
+      ...courierData,
+      ...updatedData,
+      workingDays: courierData.workingDays,
+    };
     onSubmit(updatedCourier);
   };
 
@@ -120,13 +124,6 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
               addWorkingDay={addWorkingDay}
               deleteWorkingDay={deleteWorkingDay}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => onSubmit(courierData)}
-            >
-              Submit Changes
-            </Button>
           </Box>
         </Grid2>
       </Grid2>

@@ -14,6 +14,8 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<"admin" | "courier" | "user">("user");
   const [address, setAdress] = useState<IAdress>({ lng: "", lat: "" });
+  let fields = baseFields;
+  if (role === "courier") fields = [{ name: "vehicle", label: "Vehicle", type: "text", required: true }, ...fields]
 
   const handleRoleChange = (event: SelectChangeEvent) => {
     setRole(event.target.value as "admin" | "courier" | "user");
@@ -59,7 +61,7 @@ const RegisterPage: React.FC = () => {
       console.error("Error submitting form:", error);
     }
   };
-
+  
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", p: 2 }}>
       <RoleSelector role={role} onChange={handleRoleChange} />
@@ -69,7 +71,7 @@ const RegisterPage: React.FC = () => {
       )}
 
       <BaseForm
-        fields={baseFields}
+        fields={fields}
         onSubmit={handleFormSubmit}
         defaultValues={{ name: "", email: "", password: "", profileImage: "" }}
         sx={{ maxWidth: 500 }}
