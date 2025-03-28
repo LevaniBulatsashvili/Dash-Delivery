@@ -14,6 +14,10 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import {
+  loadingNotification,
+  onResponseReturned,
+} from "../../utils/notifications";
 
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
@@ -31,7 +35,8 @@ const BaseForm: React.FC<{
   onSubmit: (formData: Record<string, string | number | File>) => void;
   defaultValues: Record<string, string | number | File>;
   sx?: object;
-}> = ({ fields, onSubmit, defaultValues, sx }) => {
+  canSubmit?: boolean;
+}> = ({ fields, onSubmit, defaultValues, sx, canSubmit }) => {
   const [formData, setFormData] = useState<
     Record<string, string | number | File>
   >(defaultValues || {});
@@ -63,6 +68,7 @@ const BaseForm: React.FC<{
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (canSubmit === true) return;
     const newErrors: Record<string, string> = {};
 
     fields.forEach(({ name, required }) => {
@@ -77,6 +83,7 @@ const BaseForm: React.FC<{
     }
 
     setLoading(true);
+    const loadingToastId = loadingNotification();
 
     try {
       const finalData = { ...formData };
@@ -104,7 +111,7 @@ const BaseForm: React.FC<{
       onSubmit(finalData);
       setFormData({});
       setErrors({});
-      alert("Form submitted successfully!");
+      onResponseReturned(loadingToastId, () => {}, null);
     } catch (error) {
       console.error("Submission error:", error);
       alert("Error submitting form. Please try again.");

@@ -3,6 +3,7 @@ import { ICourier, IWeekDays } from "../../../interface/courier.interface";
 import { Box, Typography, Grid2 } from "@mui/material";
 import CourierForm from "./CourierForm";
 import WeekdaySchedule from "./WeekdaySchedule";
+import { checkMinimumWorkingDays } from "../utils/checkMinimumWorkingDays";
 
 interface ICourierEdit {
   courier: ICourier;
@@ -82,7 +83,6 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
 
     setCourierData({ ...courierData, workingDays: updatedWorkingDays });
   };
-
   const deleteWorkingDay = (day: IWeekDays, index: number) => {
     const updatedWorkingDays = {
       ...courierData.workingDays,
@@ -103,6 +103,7 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
               courierData as unknown as Record<string, string | number | File>
             }
             handleFormSubmit={handleFormSubmit}
+            canSubmit={!checkMinimumWorkingDays(courierData.workingDays)}
           />
         </Grid2>
 
@@ -125,6 +126,9 @@ const CourierEdit = ({ courier, onSubmit }: ICourierEdit) => {
               deleteWorkingDay={deleteWorkingDay}
             />
           </Box>
+          {!checkMinimumWorkingDays(courierData.workingDays) && (
+            <Typography sx={{ color: '#fb1010' }}>Please Add Atleast 5 working Days</Typography>
+          )}
         </Grid2>
       </Grid2>
     </Box>
